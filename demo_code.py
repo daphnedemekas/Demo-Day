@@ -36,10 +36,10 @@ warnings.filterwarnings('ignore')
 
 import subprocess
 
-subprocess.run(['wget',"https://logic-ai.ricerca.di.unimi.it:8080/demo/files?key=n5i47V8DeH9nt2&file=../../VA-design-generator/training-data.zip", '-P', 'content_zipped', '--no-check-certificate'],stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+#subprocess.run(['wget',"https://logic-ai.ricerca.di.unimi.it:8080/demo/files?key=n5i47V8DeH9nt2&file=../../VA-design-generator/training-data.zip", '-P', 'content_zipped', '--no-check-certificate'],stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
-with zipfile.ZipFile('files?key=n5i47V8DeH9nt2&file=..%2F..%2FVA-design-generator%2Ftraining-data.zip', 'r') as zip_ref:
-    zip_ref.extractall('training_data')
+#with zipfile.ZipFile('files?key=n5i47V8DeH9nt2&file=..%2F..%2FVA-design-generator%2Ftraining-data.zip', 'r') as zip_ref:
+#    zip_ref.extractall('training_data')
 
 
 ceramic_artist_desc = {'Delft': {'description': ', also known as Delft Blue is a general term now used for Dutch tin-glazed earthenware, a form of faience. Most of it is blue and white pottery, and the city of Delft in the Netherlands was the major centre of production. Delftware includes pottery objects of all descriptions such plates, vases, figurines and other ornamental forms and tiles. The start of the style was around 1600, and the most highly regarded period of production is about 1640–1740, but Delftware continues to be produced. In the 17th and 18th centuries Delftware was a major industry, exporting all over Europe.',
