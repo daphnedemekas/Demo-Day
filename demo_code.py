@@ -23,7 +23,7 @@ files = dropbox_download_file(dbx, filename, 'data_content.zip')
 
 import zipfile
 with zipfile.ZipFile('data_content.zip', 'r') as zip_ref:
-    zip_ref.extractall('/lookingglass_dalle_90000.pt')
+    zip_ref.extractall('model_file')
 
 import time
 from IPython.display import display, clear_output, Image
@@ -320,7 +320,7 @@ output3 = widgets.Output()
 
 def on_run_button_clicked(event):
     with output3:
-        model_path = os.path.join('/lookingglass_dalle_90000.pt')
+        model_path = 'model_file/lookingglass_dalle_90000.pt'
 
         if not os.path.exists('output/'):
             os.mkdir('output/')
