@@ -127,7 +127,7 @@ ceramic_materials.sort()
 fashion_materials.sort()
 furniture_materials.sort()
 
-ceramic_material = widgets.SelectMultiple(options = ceramic_materials, description = 'Material',style= {'description_width': 'initial'},)
+ceramic_material = widgets.SelectMultiple(options = ceramic_materials)
 fashion_material = widgets.SelectMultiple(options = fashion_materials)
 furniture_material = widgets.SelectMultiple(options = furniture_materials)
 
@@ -309,6 +309,7 @@ view_prompt_button.style.button_color = 'lightgreen'
 
 def on_view_button_prompt_clicked(event):
     with output2:
+        clear_output()
         prompt = construct_prompt() 
         constructed_prompt = widgets.HTML(value = f"<font size=3><font color='black'>Constructed prompt: {prompt}" + '<hr>')
         display(constructed_prompt)
@@ -320,6 +321,7 @@ output3 = widgets.Output()
 
 def on_run_button_clicked(event):
     with output3:
+        clear_output()
         model_path = 'model_file/lookingglass_dalle_90000.pt'
 
         if not os.path.exists('output/'):
@@ -362,85 +364,5 @@ button_run.on_click(on_run_button_clicked)
 
 vbox_result = widgets.VBox([button_run, output3])
 
-output4 = widgets.Output()
 
-import os
-import shutil
-def on_run_button_2_clicked(event):
-    with output4:
-        clear_output()
-        print("Generating image from collection ...")
-        try:
-            if not os.path.exists('output/'):
-                os.mkdir('output/')
-            prompt = construct_prompt(collection.value, century.value)
-            dbx = get_client_2()
-            prompt_fn = prompt.replace(' ', '_').replace(',','_').replace('&','-')
-            filevalue = mydict[prompt_fn]
-            filename = f'/pregenerated_data/{prompt_fn}/{filevalue}'
-            files = dropbox_download_file(dbx, filename, 'data_content.jpg')
-
-            img = Image('data_content.jpg', width = 400, height = 400)
-
-            display(img)
-            print(f"The description of this image for training is: {filevalue.replace('__', ', ').replace('-','&').replace('_',' ')}"[:-7])
-
-            os.remove('data_content.jpg')
-
-        except ApiError as e:
-            print("Sorry, we don't seem to have an image for that prompt")
-            print(e)
-        except KeyError as e:
-            print("Sorry, we don't seem to have an image for that prompt")
-            print(e)
-        except UnboundLocalError as e:
-            print("Make sure that you've selected one of object, style, material and maker from each row - and set the other options in the row to None.")
-        except FileNotFoundError as e:
-            print("Sorry, something went wrong. Try another prompt!")
-
-
-def explore_images_button(event):
-    from PIL import Image
-    with output4:
-        prompt = construct_prompt()
-        if collection.value == 'Ceramics':
-            if len(ceramic_artist.value) == 0:
-                artist = None 
-            else:
-                artist = ceramic_artist.value[0]
-                if artist == 'Rie Lucie':
-                    artist = 'Lucie Rie'
-                if artist == 'Martin Hunt':
-                    artist = 'Hunt Martin'
-
-            img_filename = get_closest_training_images_by_clip(artist, prompt, 'images-labelled/ceramics')
-            img = Image.open(f'training_data/images-labelled/ceramics/{img_filename}')
-        elif collection.value == 'Fashion':
-            if len(fashion_artist.value) == 0:
-                artist = None 
-            else:
-                artist = fashion_artist.value[0]
-            img_filename = get_closest_training_images_by_clip(artist, prompt, 'images-labelled/fashion')
-            img = Image.open(f'training_data/images-labelled/fashion/{img_filename}')
-        elif collection.value == 'Furniture & Metalwork':
-            if len(furniture_artist.value) == 0:
-                artist = None 
-            else:
-                artist = furniture_artist.value[0]
-            img_filename = get_closest_training_images_by_clip(artist, prompt, 'images-labelled/furniture')
-            img = Image.open(f'training_data/images-labelled/furniture/{img_filename}')
-        display(img.resize((int(img.width*0.3), int(img.height*0.3))))
-
-
-button_run_2 = widgets.Button(description = 'Explore training images', tooltip='Send',
-                style={'description_width': 'initial'}, layout = layout_big)
-
-button_run_2.style.button_color = 'lightblue'
-
-#button_run_2.on_click(explore_images_button)
-
-button_run_2.on_click(on_run_button_2_clicked)
-
-
-vbox_result_2 = widgets.VBox([button_run_2, output4])
 
