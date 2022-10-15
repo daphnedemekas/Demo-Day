@@ -1,6 +1,7 @@
 import dropbox
 from dropbox.exceptions import AuthError, ApiError
 import zipfile
+
 from dropbox import DropboxOAuth2FlowNoRedirect
 
 def get_client_2():
@@ -350,7 +351,6 @@ def on_run_button_clicked(event):
             os.mkdir(filepath)
         model.load_state_dict(torch.load(model_path))
         filenames = generate(vae, model, prompt, confidence = 'Low', variability = 'Ultra-High', rurealesrgan_multiplier="x1", output_filepath=filepath, num_filtered = img_amount.value, image_amount = int(img_amount.value*1.6))
-        print(f'Images saved in {filepath}')
         for image in filenames:
             img = Image(image)
             display(img)
