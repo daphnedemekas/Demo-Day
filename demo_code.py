@@ -221,9 +221,8 @@ button_description = widgets.Button(description = 'Artist / Maker Description', 
 button_description.style.button_color = 'lightgreen'
 
 def on_button_description_clicked(event):
-    clear_output()
-
     with output1:
+        clear_output()
         prompt = artist_description() 
 
 
