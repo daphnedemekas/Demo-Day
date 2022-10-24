@@ -2,7 +2,6 @@ import dropbox
 from dropbox.exceptions import AuthError, ApiError
 import zipfile
 from dropbox import DropboxOAuth2FlowNoRedirect
-import zipfile
 import time
 from IPython.display import display, clear_output, Image
 import ipywidgets as widgets
@@ -14,7 +13,10 @@ import subprocess
 from rudalle import get_rudalle_model, get_vae
 import torch
 from model.functions import generate, get_closest_training_images_by_clip
-
+from transformers import CLIPProcessor, CLIPModel
+from PIL import Image
+from tqdm import tqdm
+from random import sample
 
 def get_client_2():
     dbx = dropbox.Dropbox(
@@ -207,33 +209,28 @@ def on_button_description_clicked(event):
 
 button_description.on_click(on_button_description_clicked)
 
-def get_closest_training_images_by_clip(artist, prompt, directory):
-    from transformers import CLIPProcessor, CLIPModel
-    from PIL import Image
-    from tqdm import tqdm
+def get_closest_training_images_by_clip(prompt):
+    training_data = ['ceramics/' + f for f in os.listdir('../images-labelled/ceramics')]+ ['fashion/' + f for f in os.listdir('../images-labelled/fashion')] + ['furniture/' + f for f in os.listdir('../images-labelled/furniture')] + ['textiles/' + f for f in os.listdir('../images-labelled/textiles')] + ['metalwork/' + f for f in os.listdir('../images-labelled/metalwork')]
+    training_data_sample = sample(training_data, 300)
     model = CLIPModel.from_pretrained('openai/clip-vit-base-patch32')
     processor = CLIPProcessor.from_pretrained('openai/clip-vit-base-patch32')
-    filenames = os.listdir(directory)
     score = 0
-    to_search = []
-    if artist is not None:
-        for f in filenames:
-            if artist in f:
-                to_search.append(f)
-    else:
-        to_search = filenames
-    while len(to_search) > 500:
-        to_search = to_search[::2]
-    for i, f in enumerate(tqdm(to_search)):
-        image = Image.open(f'{directory}/{f}')
+    best_imgs = []
+    for i, f in enumerate(tqdm(training_data_sample)):
+        image = Image.open(f'images-labelled/{f}')
         inputs = processor(text=[prompt], images = image, return_tensors = 'pt', padding=True)
         outputs = model(**inputs)
         logits_per_image = outputs.logits_per_image 
         s = logits_per_image.item()
+        best_imgs = []
+        scores = []
         if s > score:
             score = s
             index = i
-    return filenames[index]
+            best_imgs.append(i)
+            scores.append(s)
+    indices = np.argsort(np.array(scores))
+    return training_data_sample[indices[-1]], training_data_sample[indices[-2]], training_data_sample[indices[-3]]
 
 def construct_prompt():
     prompt = ''
@@ -341,5 +338,16 @@ button_run.on_click(on_run_button_clicked)
 
 vbox_result = widgets.VBox([button_run, output3])
 
+def on_button_clicked_2(event):
+    from PIL import Image
+    with output:
+        img_filename = get_closest_training_images_by_clip(prompt.value)
+        img = Image.open(f'../images-labelled/{img_filename}')
+        display(img.resize((int(img.width*0.3), int(img.height*0.3))))
+        
+button_run_2.on_click(on_button_clicked_2)
+
+
+vbox_result_2 = widgets.VBox([button_run_2, output])
 
 
