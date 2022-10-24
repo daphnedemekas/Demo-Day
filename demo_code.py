@@ -338,6 +338,8 @@ button_run.on_click(on_run_button_clicked)
 
 vbox_result = widgets.VBox([button_run, output3])
 
+output4 = widgets.Output()
+
 button_run_2 = widgets.Button(description = 'Explore training images', tooltip='Send',
                 style={'description_width': 'initial'}, layout = layout_big)
 
@@ -345,7 +347,7 @@ button_run_2.style.button_color = 'lightblue'
 
 def on_button_clicked_2(event):
     from PIL import Image
-    with output:
+    with output4:
         img_filename = get_closest_training_images_by_clip(prompt.value)
         img = Image.open(f'../images-labelled/{img_filename}')
         display(img.resize((int(img.width*0.3), int(img.height*0.3))))
