@@ -339,7 +339,7 @@ button_run.on_click(on_run_button_clicked)
 vbox_result = widgets.VBox([button_run, output3])
 
 button_run_2 = widgets.Button(description = 'Explore training images', tooltip='Send',
-                style={'description_width': 'initial'}, layout = layout)
+                style={'description_width': 'initial'}, layout = layout_big)
 
 button_run_2.style.button_color = 'lightblue'
 
