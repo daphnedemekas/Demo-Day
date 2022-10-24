@@ -1,8 +1,20 @@
 import dropbox
 from dropbox.exceptions import AuthError, ApiError
 import zipfile
-
 from dropbox import DropboxOAuth2FlowNoRedirect
+import zipfile
+import time
+from IPython.display import display, clear_output, Image
+import ipywidgets as widgets
+import os
+from ipywidgets import Layout
+import warnings
+warnings.filterwarnings('ignore')
+import subprocess
+from rudalle import get_rudalle_model, get_vae
+import torch
+from model.functions import generate, get_closest_training_images_by_clip
+
 
 def get_client_2():
     dbx = dropbox.Dropbox(
@@ -22,28 +34,10 @@ dbx = get_client_2()
 filename = '/lookingglass_dalle_90000.pt.zip'
 files = dropbox_download_file(dbx, filename, 'data_content.zip')
 
-import zipfile
 with zipfile.ZipFile('data_content.zip', 'r') as zip_ref:
     zip_ref.extractall('model_file')
 
-import time
-from IPython.display import display, clear_output, Image
-import ipywidgets as widgets
-import os
-from ipywidgets import Layout
-
-import warnings
-warnings.filterwarnings('ignore')
-
-import subprocess
-
-#subprocess.run(['wget',"https://logic-ai.ricerca.di.unimi.it:8080/demo/files?key=n5i47V8DeH9nt2&file=../../VA-design-generator/training-data.zip", '-P', 'content_zipped', '--no-check-certificate'],stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-
-#with zipfile.ZipFile('files?key=n5i47V8DeH9nt2&file=..%2F..%2FVA-design-generator%2Ftraining-data.zip', 'r') as zip_ref:
-#    zip_ref.extractall('training_data')
-
-
-ceramic_artist_desc = {'Delft': {'description': ', also known as Delft Blue is a general term now used for Dutch tin-glazed earthenware, a form of faience. Most of it is blue and white pottery, and the city of Delft in the Netherlands was the major centre of production. Delftware includes pottery objects of all descriptions such plates, vases, figurines and other ornamental forms and tiles. The start of the style was around 1600, and the most highly regarded period of production is about 1640–1740, but Delftware continues to be produced. In the 17th and 18th centuries Delftware was a major industry, exporting all over Europe.',
+ceramic_artist_desc = {'Delft': {'description': ', also known as Delft Blue, is a general term now used for Dutch tin-glazed earthenware, a form of faience. Most of it is blue and white pottery, and the city of Delft in the Netherlands was the major centre of production. Delftware includes pottery objects of all descriptions such plates, vases, figurines and other ornamental forms and tiles.',
                                 'source': 'Wikipedia', 'url':'https://en.wikipedia.org/wiki/Delft'},
                         'Lucie Rie': {'description': ' was an Austrian-born British ceramics artist. Rie’s works, usually consisting of hand-thrown pots, bottles, and bowl forms, are noteworthy for their Modernist forms and her use of bright colors.',
                                     'source': 'ArtNet', 'url':'http://www.artnet.com/artists/lucie-rie/'},
@@ -96,40 +90,29 @@ furniture_artist_desc = {'Paul Storr': {'description': ' was an English goldsmit
 }
 
 time_period = ['16th century', '17th century', '18th century', '19th century', '20th century']
-
-
-ceramic_subjects = ['Dish', 'Bowl', 'Cup', 'Teapot', 'Figure', 'Tile', 'Jug', 'Vase']
-
+ceramic_subjects = ['Dish', 'Teapot', 'Figure', 'Tile', 'Jug', 'Vase']
 ceramic_materials = ['Earthenware', 'Porcelain','Stoneware', 'Gold metal', 'Glass', 'Marble']
-
 ceramic_styles = ['Ottoman', 'Armorial', 'Kakiemon', 'Chinese export', 'Modernist',  'Arts and Crafts']
-
 ceramic_artists = ['Delft', 'Lucie Rie', 'Johann Kandler', 'Martin Hunt', 'Iznik', 'Wedgwood', 'Keith Murray', 'Susie Cooper']
 
 fashion_subjects = ['Costume', 'Suit', 'Hat', 'Jacket','Trousers', 'Evening', 'Shirt',
 'Necklace', 'Dress', 'Shoes']
-
 fashion_styles = ['High Fashion', 'East Asian', 'Theatrical']
-
 fashion_materials = ['Cotton','Crystals', 'Silk', 'Pearls', 'Sequins', 'Leather',
 'Straw', 'Snakeskin']
-
 fashion_artists = ['William Morris','Balenciaga', 'Versace', 'Vivienne Westwood',  'Yves Saint Laurent', 'Yoruba Women' ]
 
 furniture_subjects = ['Table', 'Chair', 'Candlestick', 'Carving', 'Clock']
-
 furniture_styles = ['Rococo', 'Baroque', 'Art Nouveau', 'Art Deco']
-
 furniture_materials = ['Wood', 'Metal', 'Glass', 'Silver']
-
 furniture_artists = ['Ashbee Robert', 'Garrard Robert', 'Hester Bateman', 'Joseph Wilmore']
 
 ceramic_materials.sort()
 fashion_materials.sort()
 furniture_materials.sort()
 
-ceramic_material = widgets.SelectMultiple(options = ceramic_materials,layout=Layout(width='12%', height='80px'))
-fashion_material = widgets.SelectMultiple(options = fashion_materials,layout=Layout(width='12%', height='80px'))
+ceramic_material = widgets.SelectMultiple(options = ceramic_materials,layout=Layout(width='25%', height='80px'))
+fashion_material = widgets.SelectMultiple(options = fashion_materials,layout=Layout(width='25%', height='80px'))
 furniture_material = widgets.SelectMultiple(options = furniture_materials,layout=Layout(width='12%', height='80px'))
 
 
@@ -140,10 +123,6 @@ layout_small = widgets.Layout(width='200px', height='25px')
 select_layout = Layout(width='12%', height='80px')
 
 century = widgets.Dropdown(options = time_period, layout = Layout(width='15%', height='30px'))
-
-from rudalle import get_rudalle_model, get_vae
-import torch
-from model.functions import generate, get_closest_training_images_by_clip
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model = get_rudalle_model("Malevich", pretrained=True, fp16=True, device=device)
@@ -316,7 +295,6 @@ def on_view_button_prompt_clicked(event):
 
 view_prompt_button.on_click(on_view_button_prompt_clicked)
 
-import os
 output3 = widgets.Output()
 
 def on_run_button_clicked(event):
