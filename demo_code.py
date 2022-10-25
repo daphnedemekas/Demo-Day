@@ -209,7 +209,7 @@ def on_button_description_clicked(event):
 button_description.on_click(on_button_description_clicked)
 
 def get_closest_training_images_by_clip(prompt):
-    training_data = ['ceramics/' + f for f in os.listdir('../images-labelled/ceramics')]+ ['fashion/' + f for f in os.listdir('../images-labelled/fashion')] + ['furniture/' + f for f in os.listdir('../images-labelled/furniture')] + ['textiles/' + f for f in os.listdir('../images-labelled/textiles')] + ['metalwork/' + f for f in os.listdir('../images-labelled/metalwork')]
+    training_data = ['ceramics/' + f for f in os.listdir('images-labelled/ceramics')]+ ['fashion/' + f for f in os.listdir('images-labelled/fashion')] + ['furniture/' + f for f in os.listdir('images-labelled/furniture')] + ['textiles/' + f for f in os.listdir('images-labelled/textiles')] + ['metalwork/' + f for f in os.listdir('images-labelled/metalwork')]
     training_data_sample = sample(training_data, 300)
     model = CLIPModel.from_pretrained('openai/clip-vit-base-patch32')
     processor = CLIPProcessor.from_pretrained('openai/clip-vit-base-patch32')
