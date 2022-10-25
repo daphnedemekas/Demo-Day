@@ -14,7 +14,6 @@ from rudalle import get_rudalle_model, get_vae
 import torch
 from model.functions import generate, get_closest_training_images_by_clip
 from transformers import CLIPProcessor, CLIPModel
-from PIL import Image
 from tqdm import tqdm
 from random import sample
 
@@ -295,6 +294,7 @@ view_prompt_button.on_click(on_view_button_prompt_clicked)
 output3 = widgets.Output()
 
 def on_run_button_clicked(event):
+    
     with output3:
         clear_output()
         model_path = 'model_file/lookingglass_dalle_90000.pt'
