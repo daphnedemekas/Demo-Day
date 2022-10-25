@@ -209,6 +209,8 @@ def on_button_description_clicked(event):
 button_description.on_click(on_button_description_clicked)
 
 def get_closest_training_images_by_clip(prompt):
+    from PIL import Image
+
     training_data = ['ceramics/' + f for f in os.listdir('images-labelled/ceramics')]+ ['fashion/' + f for f in os.listdir('images-labelled/fashion')] + ['furniture/' + f for f in os.listdir('images-labelled/furniture')] + ['textiles/' + f for f in os.listdir('images-labelled/textiles')] + ['metalwork/' + f for f in os.listdir('images-labelled/metalwork')]
     training_data_sample = sample(training_data, 300)
     model = CLIPModel.from_pretrained('openai/clip-vit-base-patch32')
@@ -348,7 +350,8 @@ button_run_2.style.button_color = 'lightblue'
 def on_button_clicked_2(event):
     from PIL import Image
     with output4:
-        img1, img2, img3 = get_closest_training_images_by_clip(prompt.value)
+        prompt = construct_prompt()
+        img1, img2, img3 = get_closest_training_images_by_clip(prompt)
         img = Image.open(f'../images-labelled/{img1}')
         display(img.resize((int(img.width*0.3), int(img.height*0.3))))
         img = Image.open(f'../images-labelled/{img2}')
