@@ -217,7 +217,6 @@ def get_closest_training_images_by_clip(prompt):
     model = CLIPModel.from_pretrained('openai/clip-vit-base-patch32')
     processor = CLIPProcessor.from_pretrained('openai/clip-vit-base-patch32')
     score = 0
-    best_imgs = []
     scores = []
 
     for i, f in enumerate(tqdm(training_data_sample)):
@@ -229,7 +228,6 @@ def get_closest_training_images_by_clip(prompt):
         if s > score:
             score = s
             index = i
-            best_imgs.append(i)
             scores.append(s)
     indices = np.argsort(np.array(scores))
     return training_data_sample[indices[-1]], training_data_sample[indices[-2]], training_data_sample[indices[-3]]
