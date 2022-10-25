@@ -15,6 +15,7 @@ import torch
 from model.functions import generate, get_closest_training_images_by_clip
 from transformers import CLIPProcessor, CLIPModel
 from tqdm import tqdm
+import numpy as np
 from random import sample
 
 def get_client_2():
@@ -212,7 +213,7 @@ def get_closest_training_images_by_clip(prompt):
     from PIL import Image
 
     training_data = ['ceramics/' + f for f in os.listdir('images-labelled/ceramics')]+ ['fashion/' + f for f in os.listdir('images-labelled/fashion')] + ['furniture/' + f for f in os.listdir('images-labelled/furniture')] + ['textiles/' + f for f in os.listdir('images-labelled/textiles')] + ['metalwork/' + f for f in os.listdir('images-labelled/metalwork')]
-    training_data_sample = sample(training_data, 300)
+    training_data_sample = sample(training_data, 150)
     model = CLIPModel.from_pretrained('openai/clip-vit-base-patch32')
     processor = CLIPProcessor.from_pretrained('openai/clip-vit-base-patch32')
     score = 0
