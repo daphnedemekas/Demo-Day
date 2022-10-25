@@ -355,6 +355,6 @@ def on_button_clicked_2(event):
 button_run_2.on_click(on_button_clicked_2)
 
 
-vbox_result_2 = widgets.VBox([button_run_2, output])
+vbox_result_2 = widgets.VBox([button_run_2, output4])
 
 
