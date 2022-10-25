@@ -348,10 +348,13 @@ button_run_2.style.button_color = 'lightblue'
 def on_button_clicked_2(event):
     from PIL import Image
     with output4:
-        img_filename = get_closest_training_images_by_clip(prompt.value)
-        img = Image.open(f'../images-labelled/{img_filename}')
+        img1, img2, img3 = get_closest_training_images_by_clip(prompt.value)
+        img = Image.open(f'../images-labelled/{img1}')
         display(img.resize((int(img.width*0.3), int(img.height*0.3))))
-        
+        img = Image.open(f'../images-labelled/{img2}')
+        display(img.resize((int(img.width*0.3), int(img.height*0.3))))
+        img = Image.open(f'../images-labelled/{img3}')
+        display(img.resize((int(img.width*0.3), int(img.height*0.3))))
 button_run_2.on_click(on_button_clicked_2)
 
 
