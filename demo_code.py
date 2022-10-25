@@ -113,8 +113,8 @@ ceramic_materials.sort()
 fashion_materials.sort()
 furniture_materials.sort()
 
-ceramic_material = widgets.SelectMultiple(options = ceramic_materials,layout=Layout(width='25%', height='80px'))
-fashion_material = widgets.SelectMultiple(options = fashion_materials,layout=Layout(width='25%', height='80px'))
+ceramic_material = widgets.SelectMultiple(options = ceramic_materials,layout=Layout(width='12%', height='80px'))
+fashion_material = widgets.SelectMultiple(options = fashion_materials,layout=Layout(width='12%', height='80px'))
 furniture_material = widgets.SelectMultiple(options = furniture_materials,layout=Layout(width='12%', height='80px'))
 
 
