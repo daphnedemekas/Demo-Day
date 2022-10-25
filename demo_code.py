@@ -218,14 +218,14 @@ def get_closest_training_images_by_clip(prompt):
     processor = CLIPProcessor.from_pretrained('openai/clip-vit-base-patch32')
     score = 0
     best_imgs = []
+    scores = []
+
     for i, f in enumerate(tqdm(training_data_sample)):
         image = Image.open(f'images-labelled/{f}')
         inputs = processor(text=[prompt], images = image, return_tensors = 'pt', padding=True)
         outputs = model(**inputs)
         logits_per_image = outputs.logits_per_image 
         s = logits_per_image.item()
-        best_imgs = []
-        scores = []
         if s > score:
             score = s
             index = i
